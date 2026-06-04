@@ -22,7 +22,7 @@ This page documents the work on the **Ume Sami language model**.
 
 ## Project documentation
 
-* Add links to project specific documentation here as needed. Keep the documentation in the `docs/` directory.
+* The project has not started yet.
 
 ## In-source documentation
 
