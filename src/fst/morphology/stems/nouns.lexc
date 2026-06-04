@@ -5,4 +5,5 @@
 LEXICON Nouns
 báhkuo+N:báhkuo    Cases   ;
 girjjie+N:girjjie  Cases   ;
+báhkuogirjjie+N:báhkuogirjjie Cases ;
 ! vim: set ft=xfst-lexc:
