@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+datadir=@datarootdir@
+gtlang=sju
+dir=${datadir}/giella/${gtlang}
+srcdir=${datadir}/giella/${gtlang}
+
+Name: giella-sju
+Description: Finite-state language processing tools for Ume Sami
+URL: https://giellalt.uit.no/index.html
+Version: @VERSION@

@@ -1,0 +1,11 @@
+template = ""
+rev_id = 321
+template_sha = "84f87d8073b0ed5466d4b0246f29f6cb75de58fe"
+
+[replacements]
+__GLOTTOLOG_ID__ = "umes1235"
+__LICENSE__ = "LGPLv3"
+__REPO__ = "lang-sju"
+__UND2C__ = "sju"
+__UNDEFINED__ = "Ume Sami"
+__UND__ = "sju"
