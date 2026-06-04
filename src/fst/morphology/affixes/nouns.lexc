@@ -5,10 +5,10 @@
 LEXICON Cases
  +Sg+Nom:0   #     ;
  +Sg+Acc:at  #     ;
- +Sg+Loc:as  #     ;
- +Pl+Nom:i   #     ;
- +Pl+Acc:iat #     ;
- +Pl+Loc:ias #     ;
+ +Sg+Loc:asne  #     ;
+ +Pl+Nom:t   #     ;
+ +Pl+Acc:i #     ;
+ +Pl+Loc:isne #     ;
          #:0   Nouns ; ! Normally going via a R lexicon adding compound tags.
 
 ! vim: set ft=xfst-lexc:
