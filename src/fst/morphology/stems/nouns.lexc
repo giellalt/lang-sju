@@ -3,6 +3,6 @@
 !! Nouns in the Ume Sami language refer to objects or sets of objects, qualities, states or ideas.
 
 LEXICON Nouns
-noun+N:noun    Cases   ;
-
+báhkuo+N:báhkuo    Cases   ;
+girjjie+N:girjjie  Cases   ;
 ! vim: set ft=xfst-lexc:
