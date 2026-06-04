@@ -22,7 +22,7 @@ This page documents the work on the **Ume Sami language model**.
 
 ## Project documentation
 
-* The project has not started yet.
+* The project has not started yet. 
 
 ## In-source documentation
 
