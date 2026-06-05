@@ -2,14 +2,17 @@
 !  ---------------
 !! The Ume Sami language nouns inflect in number and cases.
 
-LEXICON Cases
- +Sg+Nom:0   #     ;
- +Sg+Acc:at  #     ;
+LEXICON 2syll
+ +Sg+Nom:   #     ;
+ +Sg+Acc:^WG  #     ;
+ +Sg+Gen:^WG  #     ;
  +Sg+Loc:asne  #     ;
  +Pl+Nom:t   #     ;
  +Pl+Acc:i #     ;
  +Pl+Loc:isne #     ;
          #:0   Nouns ; ! Normally going via a R lexicon adding compound tags.
 
+LEXICON 3syll
++Sg+Nom: # ;
 ! vim: set ft=xfst-lexc:
 

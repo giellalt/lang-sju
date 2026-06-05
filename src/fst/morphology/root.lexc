@@ -319,6 +319,11 @@ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z !!≈ @CODE@
 
 !! ## Morphophonology
 !  ---------------
+
+!!Triggers
+
+%^WG !!≈ * **@CODE@** = weak grade trigger
+
 !! To represent phonologic variations in word forms we use the following
 !! symbols in the lexicon files:
 {aä} !!≈ * **@CODE@** = surface a or ä
