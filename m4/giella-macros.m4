@@ -36,7 +36,7 @@
 # feature they are on their own
 
 AC_ARG_ENABLE([configure-errors],
-              [AS_HELP_STRING([--disable-configure-errors].
+              [AS_HELP_STRING([--disable-configure-errors],
                               [disables fatal errors in configure script @<:@default=enabled@:>@])],
                               [enable_configure_errors=$enableval],
                               [enable_configure_errors=yes])
@@ -51,6 +51,18 @@ AC_DEFUN([gt_MSG_WARN],
          [_yellow=`tput setaf 3`
           _reset=`tput sgr0`
           AC_MSG_WARN([$_yellow $1 $_reset])])
+
+# hack to allow people who don't tab-complete to misplel switches, this won't
+# work for all use cases but most of the simple ones yeah
+# (the alias arm ignores the optional last parametre which implements the
+# default action on purpose, otherwise it'd always reset to defaults when
+# correctly spelt)
+AC_DEFUN([gt_ARG_ENABLE_ALIAS],
+         [AC_ARG_ENABLE([$1], [$3], [$4], [$5])
+          AC_ARG_ENABLE([$2], 
+                        [AS_HELP_STRING([--enable-$2],
+                                        [alias for --enable-$1])],
+                        [$4])])
 
 AC_DEFUN([gt_PROG_SCRIPTS_PATHS],
 [
@@ -111,7 +123,7 @@ AC_MSG_RESULT([$GIELLA_CORE])
 ###############################################################
 ### This is the version of the Giella Core that we require. ###
 ### UPDATE AS NEEDED.
-_giella_core_min_version=1.11.0
+_giella_core_min_version=1.12.0
 
 # GIELLA_CORE/GTCORE env. variable, required by the infrastructure to find scripts:
 AC_ARG_VAR([GIELLA_CORE], [directory for the Giella infra core scripts and other required resources])
@@ -172,7 +184,7 @@ AC_PATH_PROG([BC], [bc], [false], [$PATH$PATH_SEPARATOR$with_bc])
 AC_PATH_PROG([CORPUS2UNIGRAMLM], [corpus2unigramlm.py], [false], [$PATH$PATH_SEPARATOR$GIELLA_CORE/scripts])
 
 ################ YAML-based testing ################
-AC_ARG_ENABLE([yamltests],
+gt_ARG_ENABLE_ALIAS([yamltests], [yamltest],
               [AS_HELP_STRING([--enable-yamltests],
                               [enable yaml tests @<:@default=check@:>@])],
               [enable_yamltests=$enableval],
@@ -461,15 +473,24 @@ AC_PATH_PROG([CG_RELABEL], [cg-relabel], [no], [$PATH$PATH_SEPARATOR$with_vislcg
 AC_PATH_PROG([CG_MWESPLIT], [cg-mwesplit], [no], [$PATH$PATH_SEPARATOR$with_vislcg3])
 
 AS_IF([test "x$VISLCG3" != xno], [
-_giella_core_vislcg3_min_version=m4_default([$1], [1.0.0])
-AC_MSG_CHECKING([whether vislcg3 is at least $_giella_core_vislcg3_min_version])
-_vislcg3_version=$( ${VISLCG3} --version 2>&1 | grep -Eo '@<:@0-9@:>@+\.@<:@0-9.@:>@+' )
-AX_COMPARE_VERSION([$_vislcg3_version], [ge], [$_giella_core_vislcg3_min_version],
-                   [gt_prog_vislcg3=yes
-                    AC_MSG_RESULT([yes - $_vislcg3_version])
-                   ], [gt_prog_vislcg3=no
-                    AC_MSG_RESULT([no - $_vislcg3_version])
-                   ])
+_giella_core_vislcg3_min_version=m4_default([$1], [1.4.0])
+AC_MSG_CHECKING([whether vislcg3 is compatible with at least $_giella_core_vislcg3_min_version])
+_vislcg3_version_output=$( ${VISLCG3} --version 2>&1 )
+_vislcg3_version=$( printf '%s\n' "$_vislcg3_version_output" \
+    | grep -Eo '@<:@0-9@:>@+\.@<:@0-9.@:>@+' )
+# Divvun CG-3 is a compatible implementation with its own product version.
+if printf '%s\n' "$_vislcg3_version_output" \
+        | grep '^Divvun CG-3 ' >/dev/null ; then
+    gt_prog_vislcg3=yes
+    AC_MSG_RESULT([yes - Divvun CG-3 $_vislcg3_version])
+else
+    AX_COMPARE_VERSION([$_vislcg3_version], [ge], [$_giella_core_vislcg3_min_version],
+                       [gt_prog_vislcg3=yes
+                        AC_MSG_RESULT([yes - $_vislcg3_version])
+                       ], [gt_prog_vislcg3=no
+                        AC_MSG_RESULT([no - $_vislcg3_version])
+                       ])
+fi
 ],
 [gt_prog_vislcg3=no])
 AC_MSG_CHECKING([whether we can enable vislcg3 targets])
@@ -546,7 +567,7 @@ AM_CONDITIONAL([CAN_XZ], [test "x$ac_cv_prog_XZ" != xfalse])
 
 ############ (Hfst) compilation optimisation: ############
 # Enable hyperminimisation of the lexical transducer - default is 'no'
-AC_ARG_ENABLE([hyperminimisation],
+gt_ARG_ENABLE_ALIAS([hyperminimisation], [hyperminimization],
               [AS_HELP_STRING([--enable-hyperminimisation],
                               [enable hyperminimisation of lexical fst @<:@default=$DEFAULT_HYPERMIN@:>@])],
               [enable_hyperminimisation=$enableval],
@@ -596,7 +617,7 @@ AC_ARG_ENABLE([all_tools],
 enableval=''
 
 # Enable morphological analysers - default is 'yes'
-AC_ARG_ENABLE([analysers],
+gt_ARG_ENABLE_ALIAS([analysers], [analyzers],
               [AS_HELP_STRING([--enable-analysers],
                               [build morphological analysers @<:@default=yes@:>@])],
               [enable_analysers=$enableval],
@@ -666,7 +687,7 @@ enableval=''
 # $gt_prog_vislcg3
 
 # Enable grammar checkers - default is 'no' (via $enable_all_tools)
-AC_ARG_ENABLE([grammarchecker],
+gt_ARG_ENABLE_ALIAS([grammarchecker], [grammarcheckers],
               [AS_HELP_STRING([--enable-grammarchecker],
                               [enable grammar checker @<:@default=no@:>@])],
               [enable_grammarchecker=$enableval],
@@ -743,7 +764,7 @@ AS_IF([test "x${gtlextools_version_ok}" != xno],
 
 
 # Enable all spellers - default is 'no'
-AC_ARG_ENABLE([spellers],
+gt_ARG_ENABLE_ALIAS([spellers], [speller],
               [AS_HELP_STRING([--enable-spellers],
                               [build any/all spellers @<:@default=no@:>@])],
               [enable_spellers=$enableval],
@@ -756,7 +777,7 @@ AS_IF([test "x$enable_spellers" != xno -a "x$CORPUS2UNIGRAMLM" = xfalse],
 AM_CONDITIONAL([WANT_SPELLERS], [test "x$enable_spellers" != xno])
 
 # Enable minimised fst-spellers by default:
-AC_ARG_ENABLE([minimised-spellers],
+gt_ARG_ENABLE_ALIAS([minimised-spellers], [minimized-spellers],
               [AS_HELP_STRING([--enable-minimised-spellers],
                               [minimise hfst spellers @<:@default=$DEFAULT_SPELLER_MINIMISATION@:>@])],
               [enable_minimised_spellers=$enableval],
@@ -810,7 +831,7 @@ AM_CONDITIONAL([WANT_NEURAL_SPELLERS], [test "x$enable_neural_speller" != xno])
 #AM_CONDITIONAL([WANT_HUNSPELL], [test "x$enable_hunspell" != xno])
 
 # Enable pattern hyphenator - default is 'no'; requires fst hyphenator
-AC_ARG_ENABLE([pattern-hyphenators],
+gt_ARG_ENABLE_ALIAS([pattern-hyphenators], [pattern-hyphenator],
               [AS_HELP_STRING([--enable-pattern-hyphenators],
                               [build pattern-based hyphenators (requires fst hyphenator) @<:@default=no@:>@])],
               [enable_pattern_hyphenators=$enableval],
@@ -820,7 +841,7 @@ AS_IF([test "x$enable_pattern_hyphenators" = "xyes" -a "x$PATGEN" = "xfalse"],
        gt_MSG_ERROR([patgen required for building pattern hyphenators])])
 
 # Enable fst hyphenator - default is 'no'
-AC_ARG_ENABLE([fst-hyphenator],
+gt_ARG_ENABLE_ALIAS([fst-hyphenator], [fst-hyphenators],
               [AS_HELP_STRING([--enable-fst-hyphenator],
                               [build fst-based hyphenator @<:@default=no@:>@])],
               [enable_fst_hyphenator=$enableval],
@@ -834,7 +855,7 @@ AM_CONDITIONAL([WANT_FST_HYPHENATOR], [test "x$enable_fst_hyphenator" != xno])
 AM_CONDITIONAL([WANT_PATTERN_HYPHENATORS], [test "x$enable_pattern_hyphenators" != xno])
 
 # Enable dictionary transducers - default is 'no'
-AC_ARG_ENABLE([dicts],
+gt_ARG_ENABLE_ALIAS([dicts], [dict],
               [AS_HELP_STRING([--enable-dicts],
                               [enable dictionary transducers @<:@default=no@:>@])],
               [enable_dicts=$enableval],
@@ -930,7 +951,7 @@ AS_IF([test x$enable_emoji = xyes -a x$enable_transcriptors = xno],
 AM_CONDITIONAL([WANT_EMOJIS], [test "x$enable_emoji" != xno])
 
 # Enable building tokenisers - default is 'no'
-AC_ARG_ENABLE([tokenisers],
+gt_ARG_ENABLE_ALIAS([tokenisers], [tokenizers],
               [AS_HELP_STRING([--enable-tokenisers],
                               [enable tokenisers @<:@default=no@:>@])],
               [enable_tokenisers=$enableval],
@@ -940,7 +961,7 @@ AS_IF([test x$enable_tokenisers = xyes -a x$enable_analysers = xno],
 AM_CONDITIONAL([WANT_TOKENISERS], [test "x$enable_tokenisers" != xno])
 
 # Enable analyser tool - default is 'no' (via $enable_all_tools)
-AC_ARG_ENABLE([analyser-tool],
+gt_ARG_ENABLE_ALIAS([analyser-tool], [analyzer-tool],
               [AS_HELP_STRING([--enable-analyser-tool],
                               [enable analyser tool @<:@default=no@:>@])],
               [enable_analyser_tool=$enableval],
