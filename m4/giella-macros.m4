@@ -123,7 +123,7 @@ AC_MSG_RESULT([$GIELLA_CORE])
 ###############################################################
 ### This is the version of the Giella Core that we require. ###
 ### UPDATE AS NEEDED.
-_giella_core_min_version=1.12.0
+_giella_core_min_version=1.16.0
 
 # GIELLA_CORE/GTCORE env. variable, required by the infrastructure to find scripts:
 AC_ARG_VAR([GIELLA_CORE], [directory for the Giella infra core scripts and other required resources])
@@ -1016,6 +1016,17 @@ AC_ARG_ENABLE([slow-tests],
               [enable_slow_tests=no])
 AM_CONDITIONAL([WANT_SLOW_TESTS], [test "x$enable_slow_tests" != xno])
 
+# Documentation pages generated from source doccomments (see giella-core
+# am-shared/docs-dir-include.am). Off by default; `make docs` builds them on
+# demand regardless. Substituted as a plain variable rather than an
+# AM_CONDITIONAL so giella-core works with lang repos predating this option.
+AC_ARG_ENABLE([docs],
+              [AS_HELP_STRING([--enable-docs],
+                              [generate documentation from source doccomments as part of make @<:@default=no@:>@])],
+              [enable_docs=$enableval],
+              [enable_docs=no])
+AC_SUBST([GIELLA_DOCS], [$enable_docs])
+
 ]) # gt_ENABLE_TARGETS
 
 ################################################################################
@@ -1107,6 +1118,7 @@ cat<<EOF
   * build morphololgical segmenter: $enable_morpher
   * build analyser tool: $enable_analyser_tool
   * build text-to-speech support: $enable_tts
+  * generate documentation: $enable_docs (on demand: make docs)
 
   -- Proofing tools (off by default): --
   * hyphenators:
@@ -1132,7 +1144,6 @@ cat<<EOF
   * transcriptors enabled: $enable_transcriptors
   * syntactic tools enabled: $enable_syntax
   * yaml tests enabled: $enable_yamltests
-  * generated documentation enabled: always
 
 For more ./configure options, run ./configure --help
 
